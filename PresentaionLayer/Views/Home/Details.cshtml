@@ -1,0 +1,83 @@
+﻿@using PresentaionLayer.Models.ViewModels
+@model DetailsViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<p>Send message "@Model.Message.Subject" to :</p>
+
+    <input asp-for="Message.Id" type="hidden" />
+    <div class="row justify-content-center">
+        <div class="col-lg-7 px-5 py-2 mb-3">
+            <label class="form-label">Enter Email</label>
+            <input type="email" name="emails" multiple id="email" class="form-control" >
+        </div>
+        <div class="col-lg-7 px-5 mb-3">
+            <button class="btn px-4 py-2 btn-primary" onclick="AddEmail()" type="submit">Add</button>
+        </div>
+        <div class="col-lg-10 px-5 py-2 mb-3 border rounded" id="emails-list">
+            <p>Emails :</p>
+        </div>
+        <div class="col-lg-10 px-5 py-2 mb-3">
+            <div class="d-flex justify-content-center">
+                <button class="btn px-4 py-2 btn-success" type="button" onclick="Send()">Send</button>
+            </div>
+        </div>
+    </div>
+
+
+@section Scripts{
+    <script>
+        const emails = [];
+
+        function AddEmail(){
+            if(isEmail($('#email').val())){
+                var p = document.createElement("p");
+                p.innerText = $('#email').val();
+                $('#emails-list').append(p);
+                emails.push($('#email').val());
+                $('#email').val("");
+            } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Wrong email format',
+                  text: 'Please add a valid email !',
+                })
+            }
+            
+        }
+
+        function Send(){
+            var Id = $('#Id').val();
+            if(emails.length != 0){
+                $.ajax({
+                  type: "POST",
+                  url: "/Home/Details",
+                  data: {Id: Id,emails: emails},
+                  success: function(result){
+                      Swal.fire({
+                      icon: 'success',
+                      title: 'Done',
+                      text: 'Message sent successfully !',
+                    }).then(()=>{
+                        window.location.href = "/home/Index";
+                    })
+                      
+                  },
+                  dataType: "json"
+                });
+                
+            }else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Empty list',
+                  text: 'Please add at least one email to send !',
+                })
+            }
+        }
+        function isEmail(email) {
+          var regex = /^([a-zA-Z0-9_.+-])+\@Html.Raw("@")+(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+          return regex.test(email);
+        }
+    </script>
+}

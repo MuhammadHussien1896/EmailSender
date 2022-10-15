@@ -1,0 +1,58 @@
+﻿@using PresentaionLayer.Models.ViewModels
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<form asp-action="Index" asp-controller="Home" > 
+    <div class="row justify-content-center">
+        <div class="col-lg-7 px-5 py-2 mb-3">
+            <label asp-for="Message.Subject" class="form-label"></label>
+            <input asp-for="Message.Subject" class="form-control" >
+            <span asp-validation-for="Message.Subject"></span>
+        </div>
+        <div class="col-lg-7 px-5 py-2 mb-3">
+            <label asp-for="Message.MessageContent" class="form-label"></label>
+            <textarea asp-for="Message.MessageContent" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Message.MessageContent"></span>
+        </div>
+        <div class="col-lg-7 px-5 py-2 mb-3">
+            <div class="d-flex justify-content-center">
+                <button class="btn px-4 py-2 btn-success" type="submit">Save</button>
+            </div>
+        </div>
+    </div>
+</form> 
+<div class="row justify-content-center">
+    <div class="col-lg-9 py-4">
+    <h3 class="py-3">Messages List :</h3>
+    @if(Model.Messages != null && Model.Messages.Count() > 0 )
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Info</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach(var item in Model.Messages)
+            {
+                    <tr>
+                    <th scope="row">@item.Id</th>
+                    <td>@item.Subject</td>
+                    <td><a href="~/Home/Details?Id=@item.Id">Details</a></td>
+                </tr>       
+            }
+            </tbody>
+            </table>
+    } else
+    {
+        <p class="text-center">No Messages</p>  
+    }
+
+    </div>
+</div>
+
+
